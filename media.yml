@@ -1,0 +1,105 @@
+service: beldi
+
+frameworkVersion: '>=1.28.0 <2.0.0'
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: dev
+  memorySize: 1024
+  timeout: 60
+  region: us-east-1
+  disableLogs: false
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:*"
+        - "logs:*"
+        - "cloudwatch:*"
+        - "dynamodb:*"
+        - "iam:GetPolicy"
+        - "iam:GetPolicyVersion"
+        - "iam:GetRole"
+        - "iam:GetRolePolicy"
+        - "iam:ListAttachedRolePolicies"
+        - "iam:ListRolePolicies"
+        - "iam:ListRoles"
+        - "iam:PassRole"
+      Resource:
+        - "*"
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  Frontend:
+    handler: bin/media/Frontend
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  CastInfo:
+    handler: bin/media/CastInfo
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  ReviewStorage:
+    handler: bin/media/ReviewStorage
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  UserReview:
+    handler: bin/media/UserReview
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  MovieReview:
+    handler: bin/media/MovieReview
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  ComposeReview:
+    handler: bin/media/ComposeReview
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  Text:
+    handler: bin/media/Text
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  User:
+    handler: bin/media/User
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  UniqueId:
+    handler: bin/media/UniqueId
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  Rating:
+    handler: bin/media/Rating
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  MovieId:
+    handler: bin/media/MovieId
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  Plot:
+    handler: bin/media/Plot
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  MovieInfo:
+    handler: bin/media/MovieInfo
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  Page:
+    handler: bin/media/Page
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  mediagc:
+    handler: bin/media/gc
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+    events:
+      - schedule: rate(1 minute)
+  mediacollector:
+    handler: bin/media/collector
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+    events:
+      - schedule: rate(2 minutes)

@@ -1,0 +1,81 @@
+service: beldi
+
+frameworkVersion: '>=1.28.0 <2.0.0'
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: dev
+  memorySize: 1024
+  timeout: 60
+  region: us-east-1
+  disableLogs: false
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:*"
+        - "logs:*"
+        - "cloudwatch:*"
+        - "dynamodb:*"
+        - "iam:GetPolicy"
+        - "iam:GetPolicyVersion"
+        - "iam:GetRole"
+        - "iam:GetRolePolicy"
+        - "iam:ListAttachedRolePolicies"
+        - "iam:ListRolePolicies"
+        - "iam:ListRoles"
+        - "iam:PassRole"
+      Resource:
+        - "*"
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  bgeo:
+    handler: bin/bhotel/geo
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bprofile:
+    handler: bin/bhotel/profile
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  brate:
+    handler: bin/bhotel/rate
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  brecommendation:
+    handler: bin/bhotel/recommendation
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  buser:
+    handler: bin/bhotel/user
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bhotel:
+    handler: bin/bhotel/hotel
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bsearch:
+    handler: bin/bhotel/search
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bflight:
+    handler: bin/bhotel/flight
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  border:
+    handler: bin/bhotel/order
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bfrontend:
+    handler: bin/bhotel/frontend
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bgateway:
+    handler: bin/bhotel/gateway
+    maximumRetryAttempts: 0
+    maximumEventAge: 60

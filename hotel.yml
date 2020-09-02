@@ -1,0 +1,95 @@
+service: beldi
+
+frameworkVersion: '>=1.28.0 <2.0.0'
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: dev
+  memorySize: 1024
+  timeout: 60
+  region: us-east-1
+  disableLogs: false
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:*"
+        - "logs:*"
+        - "cloudwatch:*"
+        - "dynamodb:*"
+        - "iam:GetPolicy"
+        - "iam:GetPolicyVersion"
+        - "iam:GetRole"
+        - "iam:GetRolePolicy"
+        - "iam:ListAttachedRolePolicies"
+        - "iam:ListRolePolicies"
+        - "iam:ListRoles"
+        - "iam:PassRole"
+      Resource:
+        - "*"
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  geo:
+    handler: bin/hotel/geo
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  profile:
+    handler: bin/hotel/profile
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  rate:
+    handler: bin/hotel/rate
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  recommendation:
+    handler: bin/hotel/recommendation
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  user:
+    handler: bin/hotel/user
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  hotel:
+    handler: bin/hotel/hotel
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  search:
+    handler: bin/hotel/search
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  flight:
+    handler: bin/hotel/flight
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  order:
+    handler: bin/hotel/order
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  frontend:
+    handler: bin/hotel/frontend
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  gateway:
+    handler: bin/hotel/gateway
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  hotelgc:
+    handler: bin/hotel/gc
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+    events:
+      - schedule: rate(1 minute)
+  hotelcollector:
+    handler: bin/hotel/collector
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+    events:
+      - schedule: rate(2 minutes)
+
+

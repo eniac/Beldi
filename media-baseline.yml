@@ -1,0 +1,91 @@
+service: beldi
+
+frameworkVersion: '>=1.28.0 <2.0.0'
+
+provider:
+  name: aws
+  runtime: go1.x
+  stage: dev
+  memorySize: 1024
+  timeout: 60
+  region: us-east-1
+  disableLogs: false
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:*"
+        - "logs:*"
+        - "cloudwatch:*"
+        - "dynamodb:*"
+        - "iam:GetPolicy"
+        - "iam:GetPolicyVersion"
+        - "iam:GetRole"
+        - "iam:GetRolePolicy"
+        - "iam:ListAttachedRolePolicies"
+        - "iam:ListRolePolicies"
+        - "iam:ListRoles"
+        - "iam:PassRole"
+      Resource:
+        - "*"
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  bFrontend:
+    handler: bin/bmedia/Frontend
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bCastInfo:
+    handler: bin/bmedia/CastInfo
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bReviewStorage:
+    handler: bin/bmedia/ReviewStorage
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bUserReview:
+    handler: bin/bmedia/UserReview
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bMovieReview:
+    handler: bin/bmedia/MovieReview
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bComposeReview:
+    handler: bin/bmedia/ComposeReview
+  bText:
+    handler: bin/bmedia/Text
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bUser:
+    handler: bin/bmedia/User
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bUniqueId:
+    handler: bin/bmedia/UniqueId
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bRating:
+    handler: bin/bmedia/Rating
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bMovieId:
+    handler: bin/bmedia/MovieId
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bPlot:
+    handler: bin/bmedia/Plot
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bMovieInfo:
+    handler: bin/bmedia/MovieInfo
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
+  bPage:
+    handler: bin/bmedia/Page
+    maximumRetryAttempts: 0
+    maximumEventAge: 60
