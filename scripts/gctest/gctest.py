@@ -43,13 +43,15 @@ def main():
     parser = ArgumentParser()
     parser.add_argument("--command", required=True)
     parser.add_argument("--config", required=False)
+    parser.add_argument("--duration", required=False)
     args = parser.parse_args()
+    duration = int(args.duration)
     if args.command == 'clean':
         delete_logs("gctest")
         return
     if args.command == 'run':
         end_time = datetime.utcnow()
-        time.sleep(3 * 60)  # Wait until metric generated
+        time.sleep(1* 60)  # Wait until metric generated
         metric = cloudwatch.Metric('AWS/Lambda', 'Duration')
         response = metric.get_statistics(
             Dimensions=[
@@ -59,8 +61,8 @@ def main():
                 }
             ],
             ExtendedStatistics=['p50', 'p99'],
-            StartTime=end_time - timedelta(minutes=31),
-            EndTime=end_time + timedelta(minutes=3),
+            StartTime=end_time - timedelta(minutes=duration + 1),
+            EndTime=end_time + timedelta(minutes=1),
             Period=60,
             Unit='Milliseconds'
         )
@@ -73,7 +75,7 @@ def main():
         res = res[1:-1]
         with open('result/gctest/{}.json'.format(args.config), "w") as f:
             json.dump(res, f)
-        time.sleep(2 * 60)  # avoid conflicts
+        time.sleep(1 * 60)  # avoid conflicts
 
 
 if __name__ == "__main__":

@@ -15,7 +15,6 @@ func ClearAll() {
 	beldilib.DeleteTable("bnop")
 	beldilib.DeleteLambdaTables("tsingleop")
 	beldilib.DeleteLambdaTables("tnop")
-	time.Sleep(60 * time.Second)
 }
 
 func main() {
@@ -27,6 +26,13 @@ func main() {
 		}
 	}
 	ClearAll()
+	beldilib.WaitUntilAllDeleted([]string{
+		"singleop", "singleop-log", "singleop-collector",
+		"nop", "nop-log", "nop-collector",
+		"tsingleop", "tsingleop-log", "tsingleop-collector",
+		"tnop", "tnop-log", "tnop-collector",
+		"bsingleop", "bnop",
+	})
 	beldilib.CreateLambdaTables("singleop")
 	beldilib.CreateLambdaTables("nop")
 

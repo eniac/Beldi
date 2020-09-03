@@ -18,7 +18,10 @@ def main():
         f.write("#{:<19} {:<20} {:<20} {:<20} {:<20}\n".format("timepoint", "Without GC", "GC(T=1 min)", "GC(10 min)",
                                                              "Beldi-Txn"))
         for i in range(31):
-            f.write("{:<20} {:<20} {:<20} {:<20} {:<20}\n".format(i, nogc[i], gc1[i], gc10[i], txn[i]))
+            try:
+                f.write("{:<20} {:<20} {:<20} {:<20} {:<20}\n".format(i, nogc[i], gc1[i], gc10[i], txn[i]))
+            except:
+                break
 
 
 if __name__ == '__main__':

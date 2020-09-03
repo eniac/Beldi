@@ -3,8 +3,10 @@ package beldilib
 import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/expression"
+	"time"
 )
 
 func CreateMainTable(lambdaId string) {
@@ -169,6 +171,57 @@ func DeleteLambdaTables(lambdaId string) {
 	DeleteTable(lambdaId)
 	DeleteTable(fmt.Sprintf("%s-log", lambdaId))
 	DeleteTable(fmt.Sprintf("%s-collector", lambdaId))
+}
+
+func WaitUntilDeleted(lambda string) {
+	for ; ; {
+		res, err := DBClient.DescribeTable(&dynamodb.DescribeTableInput{TableName: aws.String(lambda)})
+		if err != nil {
+			if aerr, ok := err.(awserr.Error); ok {
+				switch aerr.Code() {
+				case dynamodb.ErrCodeResourceNotFoundException:
+					return
+				}
+			}
+		}
+		if *res.Table.TableStatus != "DELETING" {
+			DeleteTable(lambda)
+		}
+		time.Sleep(10 * time.Second)
+	}
+}
+
+func WaitUntilAllDeleted(lambdas []string) {
+	for _, lambda := range lambdas {
+		WaitUntilDeleted(lambda)
+	}
+}
+
+func WaitUntilActive(lambda string) bool {
+	counter := 0
+	for ; ; {
+		res, err := DBClient.DescribeTable(&dynamodb.DescribeTableInput{TableName: aws.String(lambda)})
+		if err != nil {
+			counter += 1
+		}
+		if *res.Table.TableStatus == "ACTIVE" {
+			return true
+		}
+		if *res.Table.TableStatus != "CREATING" && counter > 6 {
+			return false
+		}
+		time.Sleep(10 * time.Second)
+	}
+}
+
+func WaitUntilAllActive(lambdas []string) bool {
+	for _, lambda := range lambdas {
+		res := WaitUntilActive(lambda)
+		if !res {
+			return false
+		}
+	}
+	return true
 }
 
 func WriteHead(tablename string, key string) {

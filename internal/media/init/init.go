@@ -11,7 +11,6 @@ import (
 	"github.com/lithammer/shortuuid"
 	"io/ioutil"
 	"os"
-	"time"
 )
 
 var services = []string{"CastInfo", "ComposeReview", "Frontend", "MovieId", "MovieInfo", "MovieReview", "Page",
@@ -20,13 +19,22 @@ var services = []string{"CastInfo", "ComposeReview", "Frontend", "MovieId", "Mov
 func tables(baseline bool) {
 	if baseline {
 		for _, service := range services {
-			beldilib.CreateBaselineTable(fmt.Sprintf("b%s", service))
-			time.Sleep(20 * time.Second)
+			tablename := fmt.Sprintf("b%s", service)
+			for ; ; {
+				beldilib.CreateBaselineTable(tablename)
+				if beldilib.WaitUntilActive(tablename) {
+					break
+				}
+			}
 		}
 	} else {
 		for _, service := range services {
-			beldilib.CreateLambdaTables(service)
-			time.Sleep(20 * time.Second)
+			for ; ; {
+				beldilib.CreateLambdaTables(service)
+				if beldilib.WaitUntilAllActive([]string{service, fmt.Sprintf("%s-collector", service), fmt.Sprintf("%s-log", service)}) {
+					break
+				}
+			}
 		}
 	}
 }
@@ -35,12 +43,12 @@ func delete_tables(baseline bool) {
 	if baseline {
 		for _, service := range services {
 			beldilib.DeleteTable(fmt.Sprintf("b%s", service))
-			time.Sleep(20 * time.Second)
+			beldilib.WaitUntilDeleted(fmt.Sprintf("b%s", service))
 		}
 	} else {
 		for _, service := range services {
 			beldilib.DeleteLambdaTables(service)
-			time.Sleep(20 * time.Second)
+			beldilib.WaitUntilAllDeleted([]string{service, fmt.Sprintf("%s-collector", service), fmt.Sprintf("%s-log", service)})
 		}
 	}
 }

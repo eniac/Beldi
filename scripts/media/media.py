@@ -79,9 +79,11 @@ def main():
         res = res[1:-1]
         with open('result/media/{}.json'.format(args.config), "w") as f:
             json.dump(res, f)
-        time.sleep(2 * 60)  # avoid conflicts
+        time.sleep(1 * 60)  # avoid conflicts
+        print("=========================================")
         print("Median: {}".format(np.mean([x[0] for x in res])))
         print("99 Percentile: {}".format(np.mean([x[1] for x in res])))
+        print("=========================================")
 
 
 if __name__ == "__main__":

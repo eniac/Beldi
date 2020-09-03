@@ -8,7 +8,6 @@ import (
 	"github.com/eniac/Beldi/pkg/beldilib"
 	"os"
 	"strconv"
-	"time"
 )
 
 var services = []string{"user", "search", "flight", "frontend", "geo", "order",
@@ -17,18 +16,31 @@ var services = []string{"user", "search", "flight", "frontend", "geo", "order",
 func tables(baseline bool) {
 	if baseline {
 		for _, service := range services {
-			beldilib.CreateBaselineTable(fmt.Sprintf("b%s", service))
-			time.Sleep(20 * time.Second)
+			tablename := fmt.Sprintf("b%s", service)
+			for ; ; {
+				beldilib.CreateBaselineTable(tablename)
+				if beldilib.WaitUntilActive(tablename) {
+					break
+				}
+			}
 		}
 	} else {
 		for _, service := range services {
-			beldilib.CreateLambdaTables(service)
-			time.Sleep(20 * time.Second)
+			for ; ; {
+				beldilib.CreateLambdaTables(service)
+				if beldilib.WaitUntilAllActive([]string{service, fmt.Sprintf("%s-collector", service), fmt.Sprintf("%s-log", service)}) {
+					break
+				}
+			}
 		}
 		ss := []string{"flight", "frontend", "order", "hotel"}
 		for _, service := range ss {
-			beldilib.CreateMainTable(fmt.Sprintf("%s-local", service))
-			time.Sleep(20 * time.Second)
+			for ; ; {
+				beldilib.CreateMainTable(fmt.Sprintf("%s-local", service))
+				if beldilib.WaitUntilActive(fmt.Sprintf("%s-local", service)) {
+					break
+				}
+			}
 		}
 	}
 }
@@ -37,17 +49,17 @@ func delete_tables(baseline bool) {
 	if baseline {
 		for _, service := range services {
 			beldilib.DeleteTable(fmt.Sprintf("b%s", service))
-			time.Sleep(20 * time.Second)
+			beldilib.WaitUntilDeleted(fmt.Sprintf("b%s", service))
 		}
 	} else {
 		for _, service := range services {
 			beldilib.DeleteLambdaTables(service)
-			time.Sleep(20 * time.Second)
+			beldilib.WaitUntilAllDeleted([]string{service, fmt.Sprintf("%s-collector", service), fmt.Sprintf("%s-log", service)})
 		}
 		ss := []string{"flight", "frontend", "order", "hotel"}
 		for _, service := range ss {
 			beldilib.DeleteTable(fmt.Sprintf("%s-local", service))
-			time.Sleep(20 * time.Second)
+			beldilib.WaitUntilDeleted(fmt.Sprintf("%s-local", service))
 		}
 	}
 }
