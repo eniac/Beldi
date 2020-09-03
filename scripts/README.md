@@ -4,7 +4,15 @@
 
 ### Set up our docker container
 ```
-docker run -it docker.pkg.github.com/eniac/beldi/beldi:latest /bin/bash
+$ docker login
+```
+If you're using github packages, run
+```
+$ docker run -it docker.pkg.github.com/eniac/beldi/beldi:latest /bin/bash
+```
+If you're using docker hub, run
+```
+$ docker run -it tauta/beldi:latest /bin/bash
 ```
 
 The purpose of this container is to setup the environment needed to run 
