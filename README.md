@@ -1,21 +1,23 @@
 # Beldi
 
-Prototype of the system in our OSDI'20 paper: 
-[Fault-tolerant and Transactional Stateful Serverless Workflows](https://www.usenix.org/conference/osdi20/presentation/zhang-haoran)
+This repository contains the prototype system for our OSDI 2020 paper:
+[Fault-tolerant and Transactional Stateful Serverless Workflows](https://www.usenix.org/conference/osdi20/presentation/zhang-haoran).
 
-## Benchmark
-To reproduce the result from the paper, see scripts/README.md
+
+## How to run our code and reproduce our results 
+See [scripts/README.md](scripts/README.md) for a detailed description of 
+how to set up our code, run our experiments, and reproduce our results.
+
+Our code runs on Amazon AWS Lambda without additional requirements or
+dependencies.
 
 ## Cite
 ```
-@inproceedings{258880,
- address = {Banff, Alberta},
+@inproceedings{zhang20fault,
  author = {Haoran Zhang and Adney Cardoza and Peter Baile Chen and Sebastian Angel and Vincent Liu},
- booktitle = {14th USENIX Symposium on Operating Systems Design and Implementation (OSDI 20)},
- month = {November},
- publisher = {USENIX Association},
  title = {Fault-tolerant and Transactional Stateful Serverless Workflows},
- url = {https://www.usenix.org/conference/osdi20/presentation/zhang-haoran},
+ booktitle = {Proceedings of the USENIX Symposium on Operating Systems Design and Implementation (OSDI)},
+ month = {November},
  year = {2020}
 }
 ```
