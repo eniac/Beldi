@@ -2,6 +2,13 @@
 
 ## Prerequisite
 
+### install wrk
+```
+cd wrk2
+make -j4
+mv wrk ../tools/wrk
+```
+
 ### Set up our docker container
 ```
 $ docker login
